@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-card">
+    <h2>{% if is_edit %}Edit Your Profile{% else %}Create Your Freelancer Profile{% endif %}</h2>
+    <p class="subtitle">Tell clients about your skills and experience</p>
+
+    <form method="post" class="profile-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Education</label>
+            {{ form.education }}
+            {% if form.education.errors %}<span class="error">{{ form.education.errors.0 }}</span>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Experience</label>
+            {{ form.experience }}
+            {% if form.experience.errors %}<span class="error">{{ form.experience.errors.0 }}</span>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Bio</label>
+            {{ form.bio }}
+        </div>
+
+        <div class="form-group">
+            <label>Hourly rate ($)</label>
+            {{ form.hourly_rate }}
+        </div>
+
+        <div class="form-group">
+            <label>Skills</label>
+            <div class="checkbox-grid">{{ form.skills }}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Tech stack</label>
+            <div class="checkbox-grid">{{ form.tech_stack }}</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% if is_edit %}Save Profile{% else %}Create Profile{% endif %}</button>
+            {% if is_edit %}<a href="{% url 'freelancer_dashboard' %}" class="btn btn-secondary">Cancel</a>{% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}
