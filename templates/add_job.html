@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-card">
+    <h2>Add Job</h2>
+    <p class="subtitle">Post a new opportunity for freelancers</p>
+
+    <form method="post" class="profile-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}<span class="error">{{ form.title.errors.0 }}</span>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}<span class="error">{{ form.description.errors.0 }}</span>{% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Pay per hour ($)</label>
+                {{ form.pay_per_hour }}
+            </div>
+            <div class="form-group">
+                <label>Experience level</label>
+                {{ form.experience_level }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Required skills</label>
+            <div class="checkbox-grid">{{ form.required_skills }}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Tech stack</label>
+            <div class="checkbox-grid">{{ form.tech_Stack }}</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Post Job</button>
+            <a href="{% url 'recruiter_dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
