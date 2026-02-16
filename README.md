@@ -1,70 +1,294 @@
-# Getting Started with Create React App
+# Full-Stack Freelancer Discovery Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A production-ready freelancer discovery and hiring platform built with Django REST Framework backend and modern frontend.
 
-## Available Scripts
+## 🚀 Tech Stack
 
-In the project directory, you can run:
+### Backend
+- **Django 4.2+** - Web framework
+- **Django REST Framework** - API development
+- **PostgreSQL** - Database
+- **SimpleJWT** - JWT authentication
+- **Celery** - Async task processing
+- **Redis** - Celery broker & caching
 
-### `npm start`
+### Frontend
+- **HTML5, CSS3, JavaScript** (Vanilla)
+- **Tailwind CSS** - Styling
+- **Chart.js** - Analytics dashboards
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📁 Project Structure
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+project_v/
+├── backend/
+│   ├── config/              # Django settings & configuration
+│   ├── apps/
+│   │   ├── authentication/  # User auth & JWT
+│   │   ├── freelancers/     # Freelancer profiles
+│   │   ├── recruiters/      # Recruiter profiles
+│   │   ├── jobs/            # Job postings & applications
+│   │   ├── notifications/   # Email & in-app notifications
+│   │   └── analytics/       # Analytics & tracking
+│   ├── media/               # Uploaded files
+│   ├── requirements.txt     # Python dependencies
+│   └── manage.py
+└── frontend/                # HTML/CSS/JS files
+    ├── index.html
+    ├── login.html
+    ├── register.html
+    ├── freelancer-profile.html
+    ├── style.css
+    └── script.js
+```
 
-### `npm test`
+## 🛠️ Setup Instructions
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
+- Python 3.10+
+- PostgreSQL 14+
+- Redis (for Celery)
+- Node.js (optional, for Tailwind CSS build)
 
-### `npm run build`
+### 1. Database Setup
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```powershell
+# Install PostgreSQL and create database
+psql -U postgres
+CREATE DATABASE freelance_platform;
+CREATE USER freelance_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE freelance_platform TO freelance_user;
+\q
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Backend Setup
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```powershell
+# Navigate to backend directory
+cd backend
 
-### `npm run eject`
+# Create virtual environment
+python -m venv venv
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Activate virtual environment
+.\venv\Scripts\activate
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Install dependencies
+pip install -r requirements.txt
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Create .env file from example
+copy .env.example .env
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Edit .env file with your settings
+# Update DB_PASSWORD, EMAIL credentials, etc.
 
-## Learn More
+# Run migrations
+python manage.py makemigrations
+python manage.py migrate
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Create superuser
+python manage.py createsuperuser
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Run development server
+python manage.py runserver
+```
 
-### Code Splitting
+### 3. Redis & Celery Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```powershell
+# Install Redis for Windows
+# Download from: https://github.com/microsoftarchive/redis/releases
 
-### Analyzing the Bundle Size
+# Start Redis server
+redis-server
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+# In a new terminal, start Celery worker
+cd backend
+.\venv\Scripts\activate
+celery -A config worker -l info
+```
 
-### Making a Progressive Web App
+### 4. Frontend Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```powershell
+# Navigate to frontend directory
+cd frontend
 
-### Advanced Configuration
+# Option 1: Use Live Server in VS Code
+# Install "Live Server" extension
+# Right-click index.html -> Open with Live Server
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+# Option 2: Use Python HTTP server
+python -m http.server 5500
+```
 
-### Deployment
+## 🔑 Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Create a `.env` file in the `backend/` directory:
 
-### `npm run build` fails to minify
+```env
+# Django
+DEBUG=True
+SECRET_KEY=your-secret-key-here
+ALLOWED_HOSTS=localhost,127.0.0.1
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Database
+DB_NAME=freelance_platform
+DB_USER=freelance_user
+DB_PASSWORD=your_password
+DB_HOST=localhost
+DB_PORT=5432
+
+# Email (Gmail example)
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+
+# Frontend
+FRONTEND_URL=http://localhost:5500
+
+# Celery
+CELERY_BROKER_URL=redis://localhost:6379/0
+```
+
+## 📡 API Endpoints
+
+### Authentication
+- `POST /api/auth/register/` - User registration
+- `POST /api/auth/login/` - Login (get JWT tokens)
+- `POST /api/auth/refresh/` - Refresh access token
+- `POST /api/auth/logout/` - Logout (blacklist token)
+- `POST /api/auth/verify-email/` - Verify email
+- `POST /api/auth/forgot-password/` - Request password reset
+- `POST /api/auth/reset-password/` - Reset password
+- `GET /api/auth/me/` - Get current user
+
+### Freelancers
+- `GET /api/freelancers/` - List freelancers
+- `POST /api/freelancers/` - Create profile
+- `GET /api/freelancers/{id}/` - Get profile
+- `PATCH /api/freelancers/{id}/` - Update profile
+- `DELETE /api/freelancers/{id}/` - Delete profile
+
+### Recruiters
+- `GET /api/recruiters/` - List recruiters
+- `POST /api/recruiters/` - Create profile
+- `GET /api/recruiters/{id}/` - Get profile
+- `PATCH /api/recruiters/{id}/` - Update profile
+
+### Jobs
+- `GET /api/jobs/` - List jobs
+- `POST /api/jobs/` - Create job
+- `GET /api/jobs/{id}/` - Get job details
+- `PATCH /api/jobs/{id}/` - Update job
+- `POST /api/jobs/{id}/apply/` - Apply to job
+
+### Notifications
+- `GET /api/notifications/` - List notifications
+- `PATCH /api/notifications/{id}/mark-read/` - Mark as read
+
+### Analytics
+- `GET /api/analytics/dashboard/` - Dashboard data
+- `POST /api/analytics/track-event/` - Track event
+
+## 📚 API Documentation
+
+Once the server is running, visit:
+- **Swagger UI**: http://localhost:8000/swagger/
+- **ReDoc**: http://localhost:8000/redoc/
+
+## 🧪 Testing
+
+```powershell
+# Run tests
+python manage.py test
+
+# Run with coverage
+pip install coverage
+coverage run --source='.' manage.py test
+coverage report
+```
+
+## 🚀 Deployment
+
+### Production Checklist
+- [ ] Set `DEBUG=False`
+- [ ] Update `SECRET_KEY`
+- [ ] Configure `ALLOWED_HOSTS`
+- [ ] Setup PostgreSQL on production server
+- [ ] Configure static files serving
+- [ ] Setup media files storage (S3/CloudFlare)
+- [ ] Configure email service (SendGrid/Mailgun)
+- [ ] Setup Redis for Celery
+- [ ] Configure HTTPS/SSL
+- [ ] Setup domain and DNS
+
+### Deployment Options
+- **Heroku**: Easy deployment with PostgreSQL addon
+- **AWS**: EC2 + RDS + S3
+- **DigitalOcean**: App Platform or Droplets
+- **Railway**: Simple deployment with PostgreSQL
+
+## 📝 Development Notes
+
+### Database Models
+- **User**: Custom user model with email authentication
+- **FreelancerProfile**: Freelancer details, skills, portfolio
+- **RecruiterProfile**: Company information
+- **Job**: Job postings
+- **JobApplication**: Applications to jobs
+- **Notification**: In-app notifications
+- **Analytics**: Event tracking
+
+### Authentication Flow
+1. User registers → Email verification sent
+2. User verifies email → Account activated
+3. User logs in → Receives JWT access & refresh tokens
+4. Frontend stores tokens → Sends in Authorization header
+5. Token expires → Use refresh token to get new access token
+
+### Email Configuration
+For Gmail, you need to:
+1. Enable 2-factor authentication
+2. Generate an "App Password"
+3. Use the app password in `EMAIL_HOST_PASSWORD`
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Troubleshooting
+
+### Database Connection Error
+- Ensure PostgreSQL is running
+- Check database credentials in `.env`
+- Verify database exists
+
+### Celery Not Working
+- Ensure Redis is running
+- Check Celery broker URL in `.env`
+- Restart Celery worker
+
+### Email Not Sending
+- Check email credentials in `.env`
+- For Gmail, use App Password
+- Check spam folder
+
+### CORS Errors
+- Update `CORS_ALLOWED_ORIGINS` in settings.py
+- Ensure frontend URL matches
+
+## 📞 Support
+
+For issues or questions, please create an issue in the repository.
+
+---
+
+**Built with ❤️ using Django REST Framework**
