@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-card">
+    <h2>Welcome back</h2>
+    <p class="subtitle">Sign in to your SkillBridge account</p>
+
+    <form method="POST" class="auth-form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<span class="error">{{ field.errors.0 }}</span>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Sign in</button>
+    </form>
+
+    <p class="auth-footer">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+</div>
+
+<style>
+.auth-form .form-group { margin-bottom: 1.25rem; }
+.auth-footer { text-align: center; margin-top: 1.5rem; color: #8b949e; }
+.auth-footer a { color: #f59e0b; text-decoration: none; font-weight: 500; }
+.auth-footer a:hover { text-decoration: underline; }
+</style>
+{% endblock %}
