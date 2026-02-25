@@ -1,45 +1,63 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="auth-card">
-    <h2>Add Job</h2>
-    <p class="subtitle">Post a new opportunity for freelancers</p>
 
-    <form method="post" class="profile-form">
+<div class="container mt-5 page-content">
+    <h2>Create Job</h2>
+    <p class="text-muted mb-4">Fill in the details to post a new job listing.</p>
+
+    <form method="post" class="form-max-width">
         {% csrf_token %}
 
-        <div class="form-group">
-            <label>Title</label>
+        <div class="form-group mb-3">
+            <label for="id_title">Job Title</label>
             {{ form.title }}
-            {% if form.title.errors %}<span class="error">{{ form.title.errors.0 }}</span>{% endif %}
         </div>
 
-        <div class="form-group">
-            <label>Description</label>
+        <div class="form-group mb-3">
+            <label for="id_description">Description</label>
             {{ form.description }}
-            {% if form.description.errors %}<span class="error">{{ form.description.errors.0 }}</span>{% endif %}
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>Pay per hour ($)</label>
-                {{ form.pay_per_hour }}
-            </div>
-            <div class="form-group">
-                <label>Experience level</label>
-                {{ form.experience_level }}
+        <div class="form-group mb-3">
+            <label>Required Skills</label>
+            <div class="checkbox-group">
+                {{ form.required_skills }}
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Required skills</label>
-            <div class="checkbox-grid">{{ form.required_skills }}</div>
+        <div class="form-group mb-3">
+            <label>Tech Stack</label>
+            <div class="checkbox-group">
+                {{ form.tech_Stack }}
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Tech stack</label>
-            <div class="checkbox-grid">{{ form.tech_Stack }}</div>
+        <div class="form-group mb-3">
+            <label for="id_pay_per_hour">Pay per hour (₹)</label>
+            {{ form.pay_per_hour }}
         </div>
+
+        <div class="form-group mb-3">
+            <label for="id_experience_level">Experience Level</label>
+            {{ form.experience_level }}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-3">
+                <ul class="mb-0">{% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}</ul>
+            </div>
+        {% endif %}
+        {% if form.errors %}
+            <div class="alert alert-danger mb-3">
+                <ul class="mb-0">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label|default:field.name }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Post Job</button>
@@ -48,8 +66,4 @@
     </form>
 </div>
 
-<style>
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-</style>
 {% endblock %}

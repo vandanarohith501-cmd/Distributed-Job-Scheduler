@@ -11,6 +11,8 @@ urlpatterns = [
     path("recruiter/dashboard/", views.recruiter_dashboard, name="recruiter_dashboard"),
     path("freelancer/dashboard/", views.freelancer_dashboard, name="freelancer_dashboard"),
     path("add-job/", views.add_job, name="add_job"),
+    path("jobs/<int:job_id>/", views.job_detail, name="job_detail"),
+    path("jobs/<int:job_id>/apply/", views.apply_to_job, name="apply_to_job"),
     path("freelancer/profile/create/", views.create_freelancer_profile, name="create_freelancer_profile"),
     path("freelancer/profile/edit/", views.edit_freelancer_profile, name="edit_freelancer_profile"),
 ]
