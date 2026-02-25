@@ -1,53 +1,52 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="auth-card">
+<div class="auth-container">
+<div class="auth-card auth-card-wide">
     <h2>Create your account</h2>
-    <p class="subtitle">Join SkillBridge as a recruiter or freelancer</p>
+    <p class="auth-subtitle">Join SkillBridge as a recruiter or freelancer</p>
 
     <form method="post" class="auth-form">
         {% csrf_token %}
 
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-3">{% for err in form.non_field_errors %}{{ err }}{% endfor %}</div>
+        {% endif %}
         <div class="form-group">
-            <label>Username</label>
+            <label for="id_username">Username</label>
             {{ form.username }}
-            {% if form.username.errors %}<span class="error">{{ form.username.errors.0 }}</span>{% endif %}
+            {% if form.username.errors %}<span class="field-error">{{ form.username.errors.0 }}</span>{% endif %}
         </div>
 
         <div class="form-group">
             <label>Email</label>
             {{ form.email }}
-            {% if form.email.errors %}<span class="error">{{ form.email.errors.0 }}</span>{% endif %}
+            {% if form.email.errors %}<span class="field-error">{{ form.email.errors.0 }}</span>{% endif %}
         </div>
 
         <div class="form-group">
             <label>I am a</label>
             {{ form.user_type }}
-            {% if form.user_type.errors %}<span class="error">{{ form.user_type.errors.0 }}</span>{% endif %}
+            {% if form.user_type.errors %}<span class="field-error">{{ form.user_type.errors.0 }}</span>{% endif %}
         </div>
 
         <div class="form-group">
             <label>Password</label>
             {{ form.password1 }}
-            {% if form.password1.errors %}<span class="error">{{ form.password1.errors.0 }}</span>{% endif %}
+            {% if form.password1.errors %}<span class="field-error">{{ form.password1.errors.0 }}</span>{% endif %}
         </div>
 
         <div class="form-group">
             <label>Confirm password</label>
             {{ form.password2 }}
-            {% if form.password2.errors %}<span class="error">{{ form.password2.errors.0 }}</span>{% endif %}
+            {% if form.password2.errors %}<span class="field-error">{{ form.password2.errors.0 }}</span>{% endif %}
         </div>
 
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Register</button>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
     </form>
 
     <p class="auth-footer">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
 </div>
+</div>
 
-<style>
-.auth-form .form-group { margin-bottom: 1.25rem; }
-.auth-footer { text-align: center; margin-top: 1.5rem; color: #8b949e; }
-.auth-footer a { color: #f59e0b; text-decoration: none; font-weight: 500; }
-.auth-footer a:hover { text-decoration: underline; }
-</style>
 {% endblock %}

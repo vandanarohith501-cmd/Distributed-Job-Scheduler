@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card p-4 job-detail-card">
+        <h2>{{ job.title }}</h2>
+        <p class="text-muted mb-3">Posted by {{ job.recuriter.username }} · {{ job.created_at|timesince }} ago</p>
+
+        <div class="mb-4">
+            <h5>Description</h5>
+            <p>{{ job.description }}</p>
+        </div>
+
+        <div class="job-meta d-flex gap-4 flex-wrap mb-4">
+            <p class="mb-0"><strong>Experience Level:</strong> {{ job.get_experience_level_display }}</p>
+            <p class="mb-0"><strong>Pay:</strong> ₹{{ job.pay_per_hour }}/hr</p>
+        </div>
+
+        {% if job.required_skills.exists %}
+            <div class="mb-3">
+                <strong>Required Skills:</strong>
+                {% for skill in job.required_skills.all %}
+                    <span class="badge bg-secondary">{{ skill.name }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if job.tech_Stack.exists %}
+            <div class="mb-4">
+                <strong>Tech Stack:</strong>
+                {% for tech in job.tech_Stack.all %}
+                    <span class="badge bg-info">{{ tech.name }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="d-flex gap-2 flex-wrap">
+            {% if request.user.user_type == 'recruiter' %}
+                <a href="{% url 'recruiter_dashboard' %}" class="btn btn-secondary">← Back to My Jobs</a>
+            {% else %}
+                <a href="{% url 'freelancer_dashboard' %}" class="btn btn-secondary">← Back to Jobs</a>
+            {% endif %}
+            {% if request.user.user_type == 'freelancer' %}
+                {% if has_applied %}
+                    <span class="badge bg-success align-self-center px-3 py-2">You have applied for this job</span>
+                {% else %}
+                    <a href="{% url 'apply_to_job' job.id %}" class="btn btn-primary">Apply – I'm Interested</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

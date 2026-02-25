@@ -1,41 +1,80 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="dashboard">
-    <h1>Your Dashboard</h1>
-    <p class="subtitle">Welcome back, {{ user.username }}</p>
 
-    <div class="dashboard-card">
-        <h3>Your Profile</h3>
-        <div class="profile-summary">
-            <p><strong>Education:</strong> {{ profile.education|truncatewords:30 }}</p>
-            <p><strong>Experience:</strong> {{ profile.experience|truncatewords:50 }}</p>
-            {% if profile.hourly_rate %}<p><strong>Hourly rate:</strong> ${{ profile.hourly_rate }}/hr</p>{% endif %}
-            {% if profile.skills.exists %}<p><strong>Skills:</strong> {% for s in profile.skills.all %}{{ s.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}
-            {% if profile.tech_stack.exists %}<p><strong>Tech stack:</strong> {% for t in profile.tech_stack.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+<div class="container mt-5">
+    <h2>Freelancer Dashboard</h2>
+    <p class="text-muted mb-4">Browse available jobs and apply to ones you're interested in.</p>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <form method="get" class="d-flex gap-2 flex-wrap">
+            <select name="sort" class="form-select form-select-sm sort-select">
+                <option value="created_at" {% if sort == 'created_at' %}selected{% endif %}>Date Posted</option>
+                <option value="pay_per_hour" {% if sort == 'pay_per_hour' %}selected{% endif %}>Pay (₹/hr)</option>
+                <option value="title" {% if sort == 'title' %}selected{% endif %}>Title</option>
+                <option value="experience_level" {% if sort == 'experience_level' %}selected{% endif %}>Experience</option>
+            </select>
+            <select name="order" class="form-select form-select-sm order-select">
+                <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
+                <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
+            </select>
+            <button type="submit" class="btn btn-secondary btn-sm">Sort</button>
+        </form>
+    </div>
+
+    {% if jobs %}
+        {% for job in jobs %}
+            <div class="card mb-3 p-3 job-card">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                    <div class="flex-grow-1">
+                        <h4>
+                            <a href="{% url 'job_detail' job.id %}" class="job-title-link">{{ job.title }}</a>
+                        </h4>
+                        <p class="text-muted mb-2">{{ job.description|truncatewords:30 }}</p>
+                        <p><strong>Experience:</strong> {{ job.get_experience_level_display }}</p>
+                        <p><strong>Pay:</strong> ₹{{ job.pay_per_hour }}/hr</p>
+                        <p class="small text-muted">Posted {{ job.created_at|timesince }} ago</p>
+                        {% if job.required_skills.exists %}
+                            <p class="mb-0"><strong>Skills:</strong>
+                                {% for skill in job.required_skills.all %}{{ skill.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a href="{% url 'job_detail' job.id %}" class="btn btn-secondary btn-sm">View Details</a>
+                        {% if request.user.user_type == 'freelancer' %}
+                            {% if job.id in applied_job_ids %}
+                                <span class="badge bg-success">Applied</span>
+                            {% else %}
+                                <a href="{% url 'apply_to_job' job.id %}" class="btn btn-primary btn-sm">Apply – I'm Interested</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if jobs.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ jobs.previous_page_number }}{% if sort %}&sort={{ sort }}{% endif %}{% if order %}&order={{ order }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}</span>
+                </li>
+                {% if jobs.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ jobs.next_page_number }}{% if sort %}&sort={{ sort }}{% endif %}{% if order %}&order={{ order }}{% endif %}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <div class="card p-4 text-center">
+            <p>No jobs available at the moment. Check back later.</p>
         </div>
-        <a href="{% url 'edit_freelancer_profile' %}" class="btn btn-primary">Edit Profile</a>
-    </div>
-
-    <div class="dashboard-card">
-        <h3>Browse Jobs</h3>
-        <p class="text-muted">Job listings coming soon. Check back to find opportunities that match your skills.</p>
-    </div>
+    {% endif %}
 </div>
 
-<style>
-.dashboard { max-width: 800px; margin: 0 auto; padding: 3rem 2rem; }
-.dashboard h1 { font-size: 2rem; margin: 0 0 0.25rem; }
-.dashboard .subtitle { color: #8b949e; margin-bottom: 2rem; }
-.dashboard-card {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-}
-.dashboard-card h3 { margin: 0 0 1rem; font-size: 1.25rem; }
-.profile-summary p { margin: 0.5rem 0; color: #e6edf3; }
-.text-muted { color: #8b949e; margin: 0; }
-</style>
 {% endblock %}
