@@ -1,9 +1,15 @@
 from django.contrib import admin
-from .models import Skill, TechStack, User, Job, FreelancerProfile, JobApplication
+from .models import User, Organization, Project, RetryPolicy, Queue, Worker, WorkerHeartbeat, Job, JobExecution, JobLog, ScheduledJob, DeadLetterQueue
 
-admin.site.register(Skill)
-admin.site.register(TechStack)
 admin.site.register(User)
+admin.site.register(Organization)
+admin.site.register(Project)
+admin.site.register(RetryPolicy)
+admin.site.register(Queue)
+admin.site.register(Worker)
+admin.site.register(WorkerHeartbeat)
 admin.site.register(Job)
-admin.site.register(FreelancerProfile)
-admin.site.register(JobApplication)
+admin.site.register(JobExecution)
+admin.site.register(JobLog)
+admin.site.register(ScheduledJob)
+admin.site.register(DeadLetterQueue)
